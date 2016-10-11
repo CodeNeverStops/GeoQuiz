@@ -14,7 +14,7 @@ public class QuizActivity extends AppCompatActivity {
 
     private static final String TAG = "QuizActivity";
     private static final String KEY_INDEX = "index";
-    private static final String KEY_CHEATER = "cheater";
+    private static final String KEY_CHEATER_BANK = "cheater_bank";
     private static final int REQUEST_CODE_CHEAT = 0;
 
     private Button mTrueButton;
@@ -30,6 +30,8 @@ public class QuizActivity extends AppCompatActivity {
             new Question(R.string.question_americas, true),
             new Question(R.string.question_asia, true),
     };
+
+    private boolean[] mCheaterBank = new boolean[5];
 
     private int mCurrentIndex = 0;
     private boolean mIsCheater;
@@ -87,7 +89,7 @@ public class QuizActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
-                mIsCheater = false;
+                mIsCheater = mCheaterBank[mCurrentIndex];
                 updateQuestion();
             }
         });
@@ -104,7 +106,8 @@ public class QuizActivity extends AppCompatActivity {
 
         if (savedInstanceState != null) {
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
-            mIsCheater = savedInstanceState.getBoolean(KEY_CHEATER, false);
+            mCheaterBank = savedInstanceState.getBooleanArray(KEY_CHEATER_BANK);
+            mIsCheater = mCheaterBank[mCurrentIndex];
         }
 
         updateQuestion();
@@ -121,6 +124,7 @@ public class QuizActivity extends AppCompatActivity {
                 return;
             }
             mIsCheater = CheatActivity.wasAnswerShown(data);
+            mCheaterBank[mCurrentIndex] = mIsCheater;
         }
     }
 
@@ -129,7 +133,9 @@ public class QuizActivity extends AppCompatActivity {
         super.onSaveInstanceState(savedInstanceState);
         Log.i(TAG, "onSaveInstanceState");
         savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
-        savedInstanceState.putBoolean(KEY_CHEATER, mIsCheater);
+
+        mCheaterBank[mCurrentIndex] = mIsCheater;
+        savedInstanceState.putBooleanArray(KEY_CHEATER_BANK, mCheaterBank);
     }
 
     @Override
@@ -162,5 +168,3 @@ public class QuizActivity extends AppCompatActivity {
     }
 
 }
-
-
