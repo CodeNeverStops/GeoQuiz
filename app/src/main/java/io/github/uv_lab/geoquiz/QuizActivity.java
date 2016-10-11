@@ -34,7 +34,6 @@ public class QuizActivity extends AppCompatActivity {
     private boolean[] mCheaterBank = new boolean[5];
 
     private int mCurrentIndex = 0;
-    private boolean mIsCheater;
 
     private void updateQuestion() {
 //        Log.d(TAG, "Updating question text for question #" + mCurrentIndex, new Exception());
@@ -47,7 +46,7 @@ public class QuizActivity extends AppCompatActivity {
 
         int messageResId = 0;
 
-        if (mIsCheater) {
+        if (mCheaterBank[mCurrentIndex]) {
             messageResId = R.string.judgment_toast;
         } else {
             if (userPressedTrue == answerIsTrue) {
@@ -89,7 +88,6 @@ public class QuizActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
-                mIsCheater = mCheaterBank[mCurrentIndex];
                 updateQuestion();
             }
         });
@@ -107,7 +105,6 @@ public class QuizActivity extends AppCompatActivity {
         if (savedInstanceState != null) {
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
             mCheaterBank = savedInstanceState.getBooleanArray(KEY_CHEATER_BANK);
-            mIsCheater = mCheaterBank[mCurrentIndex];
         }
 
         updateQuestion();
@@ -123,8 +120,7 @@ public class QuizActivity extends AppCompatActivity {
             if (data == null) {
                 return;
             }
-            mIsCheater = CheatActivity.wasAnswerShown(data);
-            mCheaterBank[mCurrentIndex] = mIsCheater;
+            mCheaterBank[mCurrentIndex] = CheatActivity.wasAnswerShown(data);
         }
     }
 
@@ -133,8 +129,6 @@ public class QuizActivity extends AppCompatActivity {
         super.onSaveInstanceState(savedInstanceState);
         Log.i(TAG, "onSaveInstanceState");
         savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
-
-        mCheaterBank[mCurrentIndex] = mIsCheater;
         savedInstanceState.putBooleanArray(KEY_CHEATER_BANK, mCheaterBank);
     }
 
