@@ -28,6 +28,7 @@ public class CheatActivity extends AppCompatActivity {
 
     private TextView mAnswerTextView;
     private Button mShowAnswer;
+    private TextView mApiTextView;
 
     public static Intent newIntent(Context packageContext, boolean answerIsTrue) {
         Intent i = new Intent(packageContext, CheatActivity.class);
@@ -58,6 +59,9 @@ public class CheatActivity extends AppCompatActivity {
                 hideShowAnswerButton();
             }
         });
+
+        mApiTextView = (TextView) findViewById(R.id.api_text_view);
+        mApiTextView.setText("API level " + Build.VERSION.SDK_INT);
 
         if (savedInstanceState != null) {
             mAnswerShown = savedInstanceState.getBoolean(KEY_ANSWER_SHOWN, false);
